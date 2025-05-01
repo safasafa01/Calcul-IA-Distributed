@@ -89,3 +89,4 @@ if __name__ == "__main__":
     parser.add_argument('--output_dir', default="./models", help="Dossier de sortie")
     args = parser.parse_args()
     train(args.X_train_path, args.y_train_path, args.output_dir)
+# py components/train_and_gridsearch.py --X_train_path out/X_train.csv --y_train_path out/y_train.csv --output_dir models
