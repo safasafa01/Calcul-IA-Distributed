@@ -46,3 +46,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     select_best_model(args.results_path, args.output_model_path)
+#  py components/select_best_model.py --results_path ./models/gridsearch_results.json --output_model_path ./models/best_model.joblib
