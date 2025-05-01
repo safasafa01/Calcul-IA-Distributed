@@ -5,7 +5,7 @@ import os
 import json
 
 def preprocess(data_path: str, output_dir: str):
-    """Nettoie et split les données. Génère les métadonnées pour Kubeflow."""
+    """Génère les métadonnées pour Kubeflow."""
     try:
         # 1. Chargement des données (supporte CSV/JSON/Excel)
         if data_path.endswith('.csv'):
@@ -67,3 +67,5 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     preprocess(args.data_path, args.output_dir)
+
+# py components/preprocessing.py --data_path data/iris_data.csv --output_dir out
