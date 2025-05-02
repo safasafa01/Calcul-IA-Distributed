@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Model Results</title>
+</head>
+<body>
+    <h2>Model trained successfully!</h2>
+    <p>File uploaded: {{ file }}</p>
+
+    <h3>Results</h3>
+    <pre>{{ result }}</pre>
+
+    <h3>Confusion Matrix</h3>
+    <img src="data:image/png;base64,{{ cm_image|base64encode }}" alt="Confusion Matrix">
+
+    <h3>Download Model</h3>
+    <a href="{% url 'download_model' %}">Download the trained model</a>
+
+    <h3>Download Results</h3>
+    <a href="{% url 'download_results' %}">Download the results as JSON</a>
+</body>
+</html>

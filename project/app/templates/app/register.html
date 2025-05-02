@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription</title>
+</head>
+<body>
+    <div class="container">
+        <div class="form">
+            <h1>Inscription</h1>
+
+            {% if messages %}
+                <div class="messages">
+                    {% for message in messages %}
+                        <p class="{% if message.tags == 'error' %}error{% else %}success{% endif %}">{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <form method="post" action="{% url 'register' %}">
+                {% csrf_token %}
+                
+                <label for="username">Nom d'utilisateur</label>
+                <input type="text" name="username" required>
+
+                <label for="password">Mot de passe</label>
+                <input type="password" name="password" required>
+
+                <label for="password_confirm">Confirmer le mot de passe</label>
+                <input type="password" name="password_confirm" required>
+
+                <button type="submit">S'inscrire</button>
+            </form>
+
+            <p class="link">Déjà inscrit ? <a href="{% url 'login' %}">Se connecter</a></p>
+        </div>
+    </div>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        h1 {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        body {
+            min-height: 100vh;
+            width: 100%;
+            background: #007bff; /* Couleur bleue */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 400px;
+            background: #fff;
+            border-radius: 7px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .form {
+            padding: 30px;
+        }
+
+        label {
+            padding: 10px 0;
+            color: #007bff; /* Couleur bleue */
+            cursor: pointer;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            font-size: 17px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            outline: none;
+            margin-bottom: 15px;
+            margin-top: 10px;
+        }
+
+        a {
+            font-size: 16px;
+            color: #007bff; /* Couleur bleue */
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        button {
+            color: #fff;
+            background: #007bff; /* Couleur bleue */
+            width: 100%;
+            padding: 10px;
+            font-size: 17px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 6px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0056b3; /* Couleur bleu plus foncé */
+        }
+
+        .link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .error {
+            background-color: red;
+            color: #fff;
+            border-radius: 6px;
+            padding: 10px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .success {
+            background-color: green;
+            color: #fff;
+            border-radius: 6px;
+            padding: 10px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .messages {
+            margin-bottom: 15px;
+        }
+    </style>
+
+    <script>
+        // Validation JavaScript pour la confirmation du mot de passe
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function(event) {
+            const password = document.querySelector('[name="password"]').value;
+            const passwordConfirm = document.querySelector('[name="password_confirm"]').value;
+
+            if (password !== passwordConfirm) {
+                alert("Les mots de passe ne correspondent pas !");
+                event.preventDefault();  // Empêche l'envoi du formulaire
+            }
+        });
+    </script>
+</body>
+</html>
