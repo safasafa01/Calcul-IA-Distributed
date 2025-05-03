@@ -87,9 +87,18 @@ def home(request):
 
 
 @login_required
-def resultats_entrainement(request):
-    return HttpResponse("Résultats de l'entraînement à afficher ici.")
+def success(request):
+ return render(request, 'app/success.html')
 
-
-
-
+@login_required
+def accueil(request):
+ return render(request, 'app/accueil.html')
+@login_required
+def statistiques(request):
+ return render(request, 'app/statistiques.html')
+@login_required
+def lancement(request):
+ return render(request, 'app/lancement.html')
+@login_required
+def parametres(request):
+ return render(request, 'app/parametres.html')

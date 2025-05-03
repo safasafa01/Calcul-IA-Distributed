@@ -1,23 +1,386 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Model Results</title>
+    <title>NexusAI - Résultats du Modèle</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
+
+        :root {
+            --primary: #7B2CBF;
+            --secondary: #9D4EDD;
+            --accent: #FF9E00;
+            --dark: #10002B;
+            --light: #F8F9FA;
+            --glass: rgba(255, 255, 255, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #10002B 0%, #240046 100%);
+            color: white;
+            padding: 40px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Particles Background */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: float linear infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* Main Container */
+        .results-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            z-index: 2;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .results-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(157, 78, 221, 0.1) 0%, transparent 70%);
+            animation: rotate 15s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Header */
+        .results-header {
+            text-align: center;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .results-header i {
+            font-size: 32px;
+            color: var(--accent);
+        }
+
+        h1, h2, h3 {
+            color: white;
+            margin: 20px 0 15px;
+        }
+
+        h1 {
+            font-size: 28px;
+            color: var(--accent);
+        }
+
+        h2 {
+            font-size: 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 i {
+            color: var(--secondary);
+        }
+
+        /* Content Sections */
+        .section {
+            background: rgba(25, 0, 51, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(123, 44, 191, 0.1);
+            border-radius: 10px;
+        }
+
+        .file-info i {
+            font-size: 24px;
+            color: var(--secondary);
+        }
+
+        /* Results Display */
+        pre {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            border-left: 3px solid var(--accent);
+        }
+
+        /* Confusion Matrix */
+        .confusion-matrix {
+            text-align: center;
+            margin: 30px 0;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+        }
+
+        .confusion-matrix img {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Download Links */
+        .download-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .download-card {
+            background: linear-gradient(135deg, rgba(123, 44, 191, 0.2) 0%, rgba(25, 0, 51, 0.3) 100%);
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .download-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(123, 44, 191, 0.3);
+        }
+
+        .download-card h4 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            color: var(--accent);
+        }
+
+        .download-card i {
+            font-size: 24px;
+        }
+
+        .download-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(123, 44, 191, 0.4);
+        }
+
+        .download-btn i {
+            margin-right: 8px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 20px;
+            }
+            
+            .results-container {
+                padding: 25px;
+            }
+            
+            .download-section {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <style>
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-weight: 700;
+    font-size: 24px;
+    color: #2c3e50;
+  }
+  
+  .ai-icon {
+    width: 32px;
+    height: 32px;
+    fill: #3498db;
+  }
+  
+  .ai-highlight {
+    color: #3498db;
+    font-weight: 800;
+  }
+  
+  .logo-text {
+    letter-spacing: 0.5px;
+  }
+</style>
 </head>
 <body>
-    <h2>Model trained successfully!</h2>
-    <p>File uploaded: {{ file }}</p>
+    <div class="sidebar">
+ <div class="logo">
+  <i class="bi bi-cpu"></i>
+  <span class="logo-text">OptimaAI</span>
+</div>
 
-    <h3>Results</h3>
-    <pre>{{ result }}</pre>
 
-    <h3>Confusion Matrix</h3>
-    <img src="data:image/png;base64,{{ cm_image|base64encode }}" alt="Confusion Matrix">
+    <a href="{% url 'accueil' %}" class="active"><i class="bi bi-house-door"></i><span class="label">Accueil</span></a>
+    <a href="{% url 'home' %}"><i class="bi bi-cloud-arrow-up"></i><span class="label">Uploader</span></a>
+    <a href="{% url 'lancement' %}"><i class="bi bi-play-circle"></i><span class="label">Lancer</span></a>
+    <a href="{% url 'statistiques' %}"><i class="bi bi-graph-up-arrow"></i><span class="label">Statistiques</span></a>
+    <a href="{% url 'parametres' %}"><i class="bi bi-gear"></i><span class="label">Paramètres</span></a>
+    <a href="{% url 'logout' %}"><i class="bi bi-box-arrow-right"></i><span class="label">Déconnexion</span></a>
+  </div>
 
-    <h3>Download Model</h3>
-    <a href="{% url 'download_model' %}">Download the trained model</a>
+    <!-- Floating particles -->
+    <div class="particles" id="particles"></div>
 
-    <h3>Download Results</h3>
-    <a href="{% url 'download_results' %}">Download the results as JSON</a>
+    <div class="results-container">
+        <div class="results-header">
+            <i class="bi bi-check-circle-fill"></i>
+            <h1>Modèle entraîné avec succès !</h1>
+        </div>
+
+        <div class="section">
+            <div class="file-info">
+                <i class="bi bi-file-earmark-arrow-up"></i>
+                <p>Fichier utilisé pour l'entraînement : <strong>{{ file }}</strong></p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2><i class="bi bi-graph-up"></i> Résultats du Modèle</h2>
+            <pre>{{ result }}</pre>
+        </div>
+
+        <div class="section">
+            <h2><i class="bi bi-grid-3x3-gap"></i> Matrice de Confusion</h2>
+            <div class="confusion-matrix">
+                <img src="data:image/png;base64,{{ cm_image|base64encode }}" alt="Matrice de Confusion">
+            </div>
+        </div>
+
+        <div class="section">
+            <h2><i class="bi bi-download"></i> Téléchargements</h2>
+            <div class="download-section">
+                <div class="download-card">
+                    <h4><i class="bi bi-cpu"></i> Modèle Entraîné</h4>
+                    <p>Téléchargez le modèle entraîné pour l'utiliser dans vos applications.</p>
+                    <a href="{% url 'download_model' %}" class="download-btn">
+                        <i class="bi bi-download"></i> Télécharger le Modèle
+                    </a>
+                </div>
+
+                <div class="download-card">
+                    <h4><i class="bi bi-file-earmark-text"></i> Résultats Complets</h4>
+                    <p>Téléchargez tous les résultats au format JSON pour une analyse approfondie.</p>
+                    <a href="{% url 'download_results' %}" class="download-btn">
+                        <i class="bi bi-download"></i> Télécharger les Résultats
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Create floating particles
+        document.addEventListener('DOMContentLoaded', function() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 30;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                const size = Math.random() * 4 + 2;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                const duration = Math.random() * 15 + 10;
+                particle.style.animationDuration = `${duration}s`;
+                particle.style.animationDelay = `${Math.random() * 5}s`;
+                
+                particlesContainer.appendChild(particle);
+            }
+
+            // Syntax highlighting for results (simplified)
+            const preElement = document.querySelector('pre');
+            if (preElement) {
+                const text = preElement.textContent;
+                // This is a simple highlight - consider using a library like Prism.js for better results
+                preElement.innerHTML = text.replace(/(Accuracy|Precision|Recall|F1-score):\s*[\d.]+/g, 
+                    '<span style="color: var(--accent)">$&</span>');
+            }
+        });
+    </script>
 </body>
 </html>
