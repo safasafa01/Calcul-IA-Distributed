@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>NexusAI - Plateforme Distribuée</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
+
+    :root {
+      --primary: #7B2CBF;
+      --secondary: #9D4EDD;
+      --accent: #FF9E00;
+      --dark: #10002B;
+      --light: #F8F9FA;
+      --success: #38B000;
+      --glass: rgba(255, 255, 255, 0.15);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      display: flex;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #10002B 0%, #240046 100%);
+      color: var(--light);
+      overflow-x: hidden;
+    }
+
+    /* Sidebar - Version Neuromorphe */
+    .sidebar {
+      width: 90px;
+      background: rgba(25, 0, 51, 0.7);
+      backdrop-filter: blur(10px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 30px;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+      border-right: 1px solid rgba(255, 255, 255, 0.1);
+      z-index: 10;
+    }
+
+    .sidebar:hover {
+      width: 240px;
+      box-shadow: 0 0 30px rgba(123, 44, 191, 0.3);
+    }
+
+    .sidebar .logo {
+      color: var(--accent);
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 50px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 0 20px;
+      white-space: nowrap;
+    }
+
+    .sidebar .logo i {
+      font-size: 32px;
+    }
+
+    .sidebar .logo-text {
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .sidebar:hover .logo-text {
+      opacity: 1;
+    }
+
+    .sidebar a {
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      width: calc(100% - 20px);
+      padding: 16px;
+      margin: 5px 10px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      transition: all 0.3s ease;
+      border-radius: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .sidebar a::before {
+      content: '';
+      position: absolute;
+      left: -100%;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(157, 78, 221, 0.2), transparent);
+      transition: left 0.7s;
+    }
+
+    .sidebar a:hover::before {
+      left: 100%;
+    }
+
+    .sidebar a:hover, .sidebar a.active {
+      background: var(--glass);
+      color: white;
+      transform: translateX(5px);
+    }
+
+    .sidebar a i {
+      font-size: 22px;
+      min-width: 30px;
+      text-align: center;
+    }
+
+    .sidebar .label {
+      opacity: 0;
+      transition: opacity 0.3s;
+      white-space: nowrap;
+    }
+
+    .sidebar:hover .label {
+      opacity: 1;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      background: url('https://assets.codepen.io/3364143/7N3A8450.jpg') no-repeat center center;
+      background-size: cover;
+      position: relative;
+    }
+
+    .main-content::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(16, 0, 43, 0.85);
+    }
+
+    .header {
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .header span {
+      color: white;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 16px;
+    }
+
+    .header .user-badge {
+      background: var(--glass);
+      padding: 8px 16px;
+      border-radius: 50px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.3s;
+    }
+
+    .header .user-badge:hover {
+      background: rgba(157, 78, 221, 0.3);
+    }
+
+    .header .user-badge i {
+      color: var(--accent);
+    }
+
+    .content-area {
+      padding: 40px;
+      flex-grow: 1;
+      position: relative;
+      z-index: 2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Card - Glassmorphism */
+    .card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+      padding: 40px;
+      width: 100%;
+      max-width: 700px;
+      margin: auto;
+      animation: fadeInUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.1) both;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transform-style: preserve-3d;
+      perspective: 1000px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(157, 78, 221, 0.1) 0%, transparent 70%);
+      animation: rotate 15s linear infinite;
+      z-index: -1;
+    }
+
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card h3 {
+      font-size: 26px;
+      color: white;
+      margin-bottom: 30px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 600;
+    }
+
+    .card h3 i {
+      color: var(--accent);
+    }
+
+    label {
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 8px;
+      font-weight: 500;
+      display: block;
+      font-size: 15px;
+    }
+
+    input[type="file"], select {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      padding: 14px 16px;
+      width: 100%;
+      margin-bottom: 25px;
+      font-size: 15px;
+      color: white;
+      transition: all 0.3s;
+    }
+
+    input[type="file"]::file-selector-button {
+      background: var(--secondary);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      margin-right: 12px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    input[type="file"]::file-selector-button:hover {
+      background: var(--primary);
+    }
+
+    input[type="file"]:hover, select:hover {
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    input[type="file"]:focus, select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(255, 158, 0, 0.2);
+    }
+
+    select option {
+      background: var(--dark);
+      color: white;
+    }
+
+    button {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: white;
+      padding: 16px;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      border-radius: 12px;
+      width: 100%;
+      transition: all 0.3s;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(123, 44, 191, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(123, 44, 191, 0.4);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    button i {
+      margin-right: 8px;
+    }
+
+    button::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        to bottom right,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0) 47%,
+        rgba(255, 255, 255, 0.3) 48%,
+        rgba(255, 255, 255, 0) 53%,
+        rgba(255, 255, 255, 0) 100%
+      );
+      transform: rotate(30deg);
+      animation: shine 3s infinite;
+      opacity: 0;
+    }
+
+    @keyframes shine {
+      0% { transform: translateX(-100%) rotate(30deg); opacity: 0; }
+      20% { opacity: 1; }
+      100% { transform: translateX(100%) rotate(30deg); opacity: 0; }
+    }
+
+    /* Floating particles */
+    .particles {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 50%;
+      animation: float linear infinite;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 70px;
+      }
+      
+      .sidebar:hover {
+        width: 70px;
+      }
+      
+      .sidebar .label {
+        display: none !important;
+      }
+      
+      .content-area {
+        padding: 20px;
+      }
+      
+      .card {
+        padding: 30px 20px;
+      }
+    }
+/* Logo */
+.logo {
+  color: var(--accent);
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 50px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 0 20px;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+}
+
+.logo i {
+  font-size: 32px;
+}
+
+.logo-text {
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.logo:hover .logo-text {
+  opacity: 1;
+}
+
+/* Effet de survol */
+.logo:hover {
+  color: var(--primary);
+  text-shadow: 0 0 15px rgba(42, 157, 143, 0.5);
+}
+
+
+
+
+
+  </style>
+  
+
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+<div class="logo">
+  <i class="bi bi-cpu"></i>
+  <span class="logo-text">OptimaAI</span>
+</div>
+
+
+
+
+
+
+    <a href="{% url 'accueil' %}" class="active"><i class="bi bi-house-door"></i><span class="label">Accueil</span></a>
+    <a href="{% url 'home' %}"><i class="bi bi-cloud-arrow-up"></i><span class="label">Uploader</span></a>
+    <a href="{% url 'lancement' %}"><i class="bi bi-play-circle"></i><span class="label">Lancer</span></a>
+    <a href="{% url 'statistiques' %}"><i class="bi bi-graph-up-arrow"></i><span class="label">Statistiques</span></a>
+    <a href="{% url 'parametres' %}"><i class="bi bi-gear"></i><span class="label">Paramètres</span></a>
+    <a href="{% url 'logout' %}"><i class="bi bi-box-arrow-right"></i><span class="label">Déconnexion</span></a>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Floating particles -->
+    <div class="particles" id="particles"></div>
+    
+    <div class="header">
+      <div></div> <!-- Empty div for flex spacing -->
+      <span class="user-badge">
+        <i class="bi bi-person-circle"></i>
+        <span>Bonjour, {{ request.user.username }} </span>
+      </span>
+    </div>
+
+    <div class="content-area">
+      <div class="card">
+        <h3><i class="bi bi-cloud-arrow-up"></i> Importer un dataset</h3>
+        <form method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          <label for="dataset">Fichier CSV</label>
+          <input type="file" id="dataset" name="dataset" accept=".csv" required>
+
+          <label for="model_type">Type de modèle</label>
+          <select id="model_type" name="model_type" required>
+            <option value="" disabled selected>Choisissez...</option>
+            <option value="regression">Régression</option>
+            <option value="classification">Classification</option>
+            <option value="clustering">Clustering</option>
+            <option value="neural">Réseau de neurones</option>
+          </select>
+
+          <button type="submit">
+            <i class="bi bi-lightning-charge"></i> Lancer l'entraînement
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script>
+    // Create floating particles
+    document.addEventListener('DOMContentLoaded', function() {
+      const particlesContainer = document.getElementById('particles');
+      const particleCount = 20;
+      
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.classList.add('particle');
+        
+        // Random size between 2px and 6px
+        const size = Math.random() * 4 + 2;
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        
+        // Random position
+        particle.style.left = `${Math.random() * 100}%`;
+        particle.style.top = `${Math.random() * 100}%`;
+        
+        // Random animation duration (10s to 20s) and delay
+        const duration = Math.random() * 10 + 10;
+        particle.style.animationDuration = `${duration}s`;
+        particle.style.animationDelay = `${Math.random() * 5}s`;
+        
+        particlesContainer.appendChild(particle);
+      }
+    });
+  </script>
+</body>
+</html>
