@@ -1,0 +1,8 @@
+{
+  "accuracy": 0.9523809523809524,
+  "best_params": {
+    "C": 1,
+    "kernel": "linear"
+  },
+  "model_name": "SVM"
+}
